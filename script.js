@@ -233,28 +233,32 @@ class SideHustleRecommender {
             'hobby': '兴趣小透明'
         };
         
-        // 直接显示包含第一个问题的欢迎消息，避免重复
+        // 分离欢迎语和第一个问题，避免逻辑混乱
         const welcomeMessages = {
-            'early-bird': '哈喽早八特困生！我懂你每天起床的痛苦😴 先来聊聊，你是哪个学校的？比如「清华大学」「北京理工大学」，已经毕业的话说毕业院校 🎓',
-            'commuter': '嗨通勤沙丁鱼！每天挤地铁的日子不好过吧🚇 先告诉我，你是哪个学校的？比如「清华大学」「北京理工大学」，已经毕业的话说毕业院校 🎓',
-            'overtime': '你好加班燃烧弹！深夜还在奋斗真不容易💪 来说说，你是哪个学校的？比如「清华大学」「北京理工大学」，已经毕业的话说毕业院校 🎓',
-            'club-king': '社团卷王你好！忙碌充实的生活很精彩呢🎯 先聊聊，你是哪个学校的？比如「清华大学」「北京理工大学」，已经毕业的话说毕业院校 🎓',
-            'slacker': '摸鱼特种兵报到！会摸鱼也是一种技能😏 先说说，你是哪个学校的？比如「清华大学」「北京理工大学」，已经毕业的话说毕业院校 🎓',
-            'hobby': '兴趣小透明你好！有兴趣爱好是很棒的事🎨 先来聊聊，你是哪个学校的？比如「清华大学」「北京理工大学」，已经毕业的话说毕业院校 🎓'
+            'early-bird': '哈喽早八特困生！我懂你每天起床的痛苦😴',
+            'commuter': '嗨通勤沙丁鱼！每天挤地铁的日子不好过吧🚇',
+            'overtime': '你好加班燃烧弹！深夜还在奋斗真不容易💪',
+            'club-king': '社团卷王你好！忙碌充实的生活很精彩呢🎯',
+            'slacker': '摸鱼特种兵报到！会摸鱼也是一种技能😏',
+            'hobby': '兴趣小透明你好！有兴趣爱好是很棒的事🎨'
         };
         
-        const welcomeMessage = welcomeMessages[this.userProfile.tag] || `哈喽！看你选了「${tagNames[this.userProfile.tag]}」，我懂你的感受！先来聊聊，你是哪个学校的？比如「清华大学」「北京理工大学」，已经毕业的话说毕业院校 🎓`;
+        const welcomeMessage = welcomeMessages[this.userProfile.tag] || `哈喽！看你选了「${tagNames[this.userProfile.tag]}」，我懂你的感受！`;
         this.addMessage(welcomeMessage, 'bot');
         
-        // 欢迎消息已经包含了第一个问题，所以将currentStep设置为1，避免重复显示第一个问题
-        this.currentStep = 1;
+        // 重置currentStep为0，然后调用askNextQuestion显示第一个问题
+        this.currentStep = 0;
+        
+        // 延迟一下再显示第一个问题，让欢迎语先显示
+        setTimeout(() => {
+            this.askNextQuestion();
+        }, 800);
     }
 
     askNextQuestion() {
-        // 因为startChat中已经将currentStep设置为1，所以这里需要减1来获取正确的问题
-        const questionIndex = this.currentStep - 1;
-        if (questionIndex < this.questions.length && questionIndex >= 0) {
-            const question = this.questions[questionIndex].question;
+        // currentStep现在直接对应问题索引
+        if (this.currentStep < this.questions.length) {
+            const question = this.questions[this.currentStep].question;
             this.addMessage(question, 'bot');
         } else {
             this.generateRecommendation();
@@ -331,13 +335,9 @@ class SideHustleRecommender {
         input.value = '';
         
         // 保存用户回答
-        if (this.currentStep <= this.questions.length) {
-            // 因为startChat中已经将currentStep设置为1，所以这里需要减1来获取正确的问题
-            const questionIndex = this.currentStep - 1;
-            if (questionIndex >= this.questions.length) {
-                return; // 已经超出问题范围
-            }
-            const key = this.questions[questionIndex].key;
+        if (this.currentStep < this.questions.length) {
+            // currentStep现在直接对应问题索引
+            const key = this.questions[this.currentStep].key;
             
             // 显示验证中的提示
             this.addMessage('正在验证回答...', 'bot', true);
@@ -352,7 +352,7 @@ class SideHustleRecommender {
                     this.addMessage('请认真回答问题哦～让我重新问一遍：', 'bot');
                     setTimeout(() => {
                         // 直接显示当前问题，不调用askNextQuestion避免重复
-                        const question = this.questions[questionIndex].question;
+                        const question = this.questions[this.currentStep].question;
                         this.addMessage(question, 'bot');
                     }, 1000);
                 }, 500);
