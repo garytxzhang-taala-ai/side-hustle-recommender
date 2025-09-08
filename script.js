@@ -222,7 +222,7 @@ class SideHustleRecommender {
         this.startChat();
     }
 
-    async startChat() {
+    startChat() {
         const chatMessages = document.getElementById('chat-messages');
         const tagNames = {
             'early-bird': '早八特困生',
@@ -233,11 +233,18 @@ class SideHustleRecommender {
             'hobby': '兴趣小透明'
         };
         
-        // 生成AI欢迎消息
-        const welcomeMessage = await this.generateWelcomeMessage(tagNames[this.userProfile.tag]);
-        this.addMessage(welcomeMessage, 'bot');
+        // 直接显示预设欢迎消息，避免API调用延迟
+        const welcomeMessages = {
+            'early-bird': '哈喽早八特困生！我懂你每天起床的痛苦😴 来聊聊你的具体情况，我给你推荐些适合的副业~',
+            'commuter': '嗨通勤沙丁鱼！每天挤地铁的日子不好过吧🚇 让我了解下你的情况，帮你找些合适的副业机会！',
+            'overtime': '你好加班燃烧弹！深夜还在奋斗真不容易💪 来说说你的具体情况，我帮你规划下副业方向~',
+            'club-king': '社团卷王你好！忙碌充实的生活很精彩呢🎯 聊聊你的详细情况，我来推荐适合的副业！',
+            'slacker': '摸鱼特种兵报到！会摸鱼也是一种技能😏 告诉我你的具体情况，我帮你找到合适的副业~',
+            'hobby': '兴趣小透明你好！有兴趣爱好是很棒的事🎨 来详细聊聊，我帮你把兴趣变成副业收入！'
+        };
         
-        // 预设问题已准备好，无需生成
+        const welcomeMessage = welcomeMessages[this.userProfile.tag] || `哈喽！看你选了「${tagNames[this.userProfile.tag]}」，我懂你的感受！现在来聊聊你的具体情况，我好给你量身定制副业推荐~`;
+        this.addMessage(welcomeMessage, 'bot');
         
         // 立即显示第一个问题
         setTimeout(() => {
@@ -254,59 +261,67 @@ class SideHustleRecommender {
         }
     }
 
-    validateAnswer(answer, questionKey) {
-        // 基本验证：回答不能太短或只是数字/符号
-        if (answer.length < 2) {
+    async validateAnswer(answer, questionKey) {
+        // 基本验证：回答不能太短
+        if (answer.length < 1) {
             return false;
         }
         
-        // 检查是否只是无意义的回复
-        const meaninglessReplies = ['不知道', '随便', '没有', '无', '？', '?', '。', '.', '嗯', '啊', '哦', '好的', 'ok', 'OK'];
-        if (meaninglessReplies.includes(answer.trim())) {
-            return false;
-        }
-        
-        // 根据问题类型进行特定验证
-        switch (questionKey) {
-            case 'school':
-                // 学校问题：应该包含学校相关词汇或常见学校名称
-                const schoolKeywords = ['大学', '学院', '学校', '高中', '中学', '职校', '技校', '研究生', '本科', '专科', '博士', '硕士'];
-                const commonSchools = ['复旦', '清华', '北大', '交大', '浙大', '南大', '中大', '华科', '西交', '哈工大', '同济', '华师大', '上财', '央财', '人大', '北师大', '中科大', '厦大', '武大', '华中', '东南', '天大', '大连理工', '西北大', '兰大', '川大', '重大', '电子科大', '西南', '暨大', '华南理工', '中南', '湖大', '东北', '吉大', '哈尔滨', '大工', '北航', '北理工', '农大', '林大', '地大', '矿大', '石大', '海大', '药大', '邮电', '外经贸', '政法', '师范', '财经', '理工', '工业', '科技', '医科', '农业', '林业', '海洋', '石油', '地质', '矿业', '邮电', '电力', '铁道', '航空', '航天'];
-                return schoolKeywords.some(keyword => answer.includes(keyword)) || 
-                       commonSchools.some(school => answer.includes(school));
-                
-            case 'gender':
-                // 性别问题：应该是明确的性别回答
-                const genderKeywords = ['男', '女', '男生', '女生', '男性', '女性', 'boy', 'girl', 'male', 'female'];
-                return genderKeywords.some(keyword => answer.toLowerCase().includes(keyword.toLowerCase()));
-                
-            case 'major':
-                // 专业问题：应该包含专业相关内容
-                return answer.length >= 2 && !['不是学生', '没有专业', '工作了'].includes(answer);
-                
-            case 'mainJob':
-                // 身份问题：应该描述身份或工作
-                return answer.length > 2;
-                
-            case 'timeAvailable':
-                // 时间问题：应该包含时间相关词汇
-                const timeKeywords = ['小时', '时间', '分钟', '天', '周', '月', '早上', '下午', '晚上', '周末', '工作日', '空闲', '忙'];
-                return timeKeywords.some(keyword => answer.includes(keyword)) || answer.length > 3;
-                
-            case 'interests':
-                // 兴趣技能问题：应该描述具体的兴趣或技能
-                return answer.length >= 2 && !['没有兴趣', '什么都不会'].includes(answer);
-                
-            case 'goal':
-                // 目标问题：应该描述目标
-                return answer.length > 3;
-                
-            default:
-                return answer.length > 2;
+        // 使用AI验证回答是否合理
+        try {
+            const questionTexts = {
+                'school': '你是哪个学校的？',
+                'gender': '性别是？',
+                'major': '什么专业的？',
+                'mainJob': '现在主要身份是什么？',
+                'timeAvailable': '每天大概有多少时间可以用来搞副业？',
+                'interests': '有什么兴趣爱好或技能？',
+                'goal': '做副业主要想达成什么目标？'
+            };
+            
+            const prompt = `请判断用户对问题「${questionTexts[questionKey]}」的回答「${answer}」是否合理和认真。
+            
+判断标准：
+1. 回答是否与问题相关
+2. 回答是否认真（不是敷衍、乱填、无意义的内容）
+3. 回答是否包含有效信息
+
+如果回答合理认真，请只回复"valid"；如果回答不合理或敷衍，请只回复"invalid"。`;
+            
+            const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer sk-29c306bada2f48b8bb34ef53d97081aa',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'deepseek-chat',
+                    messages: [{
+                        role: 'user',
+                        content: prompt
+                    }],
+                    temperature: 0.1,
+                    max_tokens: 10
+                })
+            });
+            
+            if (!response.ok) {
+                console.error('AI验证失败，使用基本验证');
+                return answer.length >= 2;
+            }
+            
+            const data = await response.json();
+            const result = data.choices[0].message.content.trim().toLowerCase();
+            return result.includes('valid') && !result.includes('invalid');
+            
+        } catch (error) {
+            console.error('AI验证出错，使用基本验证:', error);
+            // 如果AI验证失败，使用基本验证作为后备
+            return answer.length >= 2;
         }
     }
 
-    sendMessage() {
+    async sendMessage() {
         const input = document.getElementById('user-input');
         const message = input.value.trim();
         
@@ -319,11 +334,17 @@ class SideHustleRecommender {
         if (this.currentStep < this.questions.length) {
             const key = this.questions[this.currentStep].key;
             
+            // 显示验证中的提示
+            this.addMessage('正在验证回答...', 'bot', true);
+            
             // 验证用户回答是否相关
-            if (!this.validateAnswer(message, key)) {
+            const isValid = await this.validateAnswer(message, key);
+            this.removeTypingIndicator();
+            
+            if (!isValid) {
                 // 如果回答不相关，提示用户重新回答
                 setTimeout(() => {
-                    this.addMessage('请回答与问题相关的内容哦～让我重新问一遍：', 'bot');
+                    this.addMessage('请认真回答问题哦～让我重新问一遍：', 'bot');
                     setTimeout(() => {
                         this.askNextQuestion();
                     }, 1000);
