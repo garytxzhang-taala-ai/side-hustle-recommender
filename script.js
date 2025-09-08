@@ -1034,5 +1034,6 @@ ${conversationContext}
 
 // 初始化应用
 document.addEventListener('DOMContentLoaded', () => {
-    new SideHustleRecommender();
+    const app = new SideHustleRecommender();
+    app.init();
 });
