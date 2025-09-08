@@ -47,7 +47,9 @@ class SideHustleRecommender {
             '东南': { fullName: '东南大学', description: '中国著名理工科大学，985/211工程重点建设高校' },
             '天大': { fullName: '天津大学', description: '中国著名理工科大学，985/211工程重点建设高校' },
             '北航': { fullName: '北京航空航天大学', description: '中国顶尖航空航天类大学，985/211工程重点建设高校' },
-            '北理工': { fullName: '北京理工大学', description: '中国著名理工科大学，985/211工程重点建设高校' }
+            '北理工': { fullName: '北京理工大学', description: '中国著名理工科大学，985/211工程重点建设高校' },
+            '应技大': { fullName: '上海应用技术大学', description: '以应用型人才培养为特色的理工科大学' },
+            '杜克': { fullName: '杜克大学', description: '美国顶尖私立研究型大学，世界知名学府' }
         };
         
         this.majorMapping = {
