@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z世代副业搭子 - 找到刚好踩在舒适区里的钱</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- 主标题区域 -->
+        <header class="hero">
+            <h1>Z世代副业搭子</h1>
+            <p class="subtitle">专门帮大学生/职场新人找「不坑、能做、还能爽」的副业</p>
+            <p class="tagline">找到刚好踩在舒适区里的钱 💰</p>
+        </header>
+
+        <!-- 标签选择区域 -->
+        <section id="tag-selection" class="section active">
+            <video class="peek-video" autoplay muted loop playsinline>
+                <source src="video/peek2.mp4" type="video/mp4">
+            </video>
+            <h2>先来「对号入座」，选一个精准戳中你的标签：</h2>
+            <div class="tags-grid">
+                <div class="tag-card" data-tag="early-bird">
+                    <h3>早八特困生</h3>
+                    <p class="tag-desc">大学生 | 课表≈「早八+晚九+实验课」</p>
+                    <p class="tag-complaint">"上次想做副业，打开软件看到「需2小时连续时间」，直接把手机摔进了泡面桶，汤都洒了"</p>
+                </div>
+                
+                <div class="tag-card" data-tag="commuter">
+                    <h3>通勤沙丁鱼</h3>
+                    <p class="tag-desc">职场新人 | 通勤≥1.5小时</p>
+                    <p class="tag-complaint">"昨天在地铁上写文案，到站时手机卡进地铁门缝，副业没开始先损失了钢化膜"</p>
+                </div>
+                
+                <div class="tag-card" data-tag="overtime">
+                    <h3>加班燃烧弹</h3>
+                    <p class="tag-desc">职场新人 | 自由时间≤0.5h/天</p>
+                    <p class="tag-complaint">"上次想做「熬夜配音」，配到一半睡着，麦克风录了30分钟呼噜声，醒来看见「未读消息：客户说「你这配音有灵魂」」，我直接社死"</p>
+                </div>
+                
+                <div class="tag-card" data-tag="club-king">
+                    <h3>社团卷王</h3>
+                    <p class="tag-desc">大学生 | 身兼3个社团干部</p>
+                    <p class="tag-complaint">"帮社团拉了500块赞助，自己赚的奶茶钱都比这多，主打一个「为社团做慈善」"</p>
+                </div>
+                
+                <div class="tag-card" data-tag="slacker">
+                    <h3>摸鱼特种兵</h3>
+                    <p class="tag-desc">职场新人 | 上班能悄悄做事</p>
+                    <p class="tag-complaint">"昨天摸鱼做PPT模板，被主管夸「最近工作积极性很高」，我当场攥紧鼠标：「别夸了，再夸要露馅」"</p>
+                </div>
+                
+                <div class="tag-card" data-tag="hobby">
+                    <h3>兴趣小透明</h3>
+                    <p class="tag-desc">通用 | 有小爱好但没想过能赚钱</p>
+                    <p class="tag-complaint">"上次把手工钥匙扣送朋友，朋友问「你卖吗？」，我懵圈：「这破玩意儿也有人买？」"</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 信息收集区域 -->
+        <section id="info-collection" class="section">
+            <h2>来唠唠嗑，了解一下你的情况：</h2>
+            <div class="chat-container">
+                <div id="chat-messages"></div>
+                <div class="input-container">
+                    <input type="text" id="user-input" placeholder="输入你的回答...">
+                    <button id="send-btn">发送</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 推荐结果区域 -->
+        <section id="recommendation" class="section">
+            <div id="recommendation-content"></div>
+        </section>
+
+        <!-- 操作按钮区域 -->
+        <div id="action-buttons" class="action-buttons" style="display: none;">
+            <button id="download-btn" class="download-btn">下载报告</button>
+            <button id="restart-btn" class="restart-btn">重新开始</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

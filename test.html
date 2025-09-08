@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>副业推荐器测试</title>
+</head>
+<body>
+    <h1>副业推荐器数据流测试</h1>
+    <div id="test-results"></div>
+    
+    <script>
+        // 模拟用户数据
+        const testUserProfile = {
+            tag: 'early-bird',
+            mainJob: '计算机专业大三学生',
+            timeAvailable: '每天晚上2小时',
+            interests: '会编程，喜欢写作',
+            goal: '赚钱（生活费）'
+        };
+        
+        // 模拟buildPrompt方法
+        function buildTestPrompt(userProfile) {
+            const tagNames = {
+                'early-bird': '早八特困生',
+                'commuter': '通勤沙丁鱼', 
+                'overtime': '加班燃烧弹',
+                'club-king': '社团卷王',
+                'slacker': '摸鱼特种兵',
+                'hobby': '兴趣小透明'
+            };
+            
+            return `你是一个专业的Z世代副业推荐顾问，擅长深度分析用户情况并提供个性化建议。
+
+用户详细信息：
+- 身份标签：${tagNames[userProfile.tag]}
+- 主业/身份：${userProfile.mainJob}
+- 可用时间：${userProfile.timeAvailable}
+- 兴趣技能：${userProfile.interests}
+- 副业目标：${userProfile.goal}
+
+请深度分析用户的具体情况，结合他们的时间限制、技能特长、职业背景和个人目标，为他们量身定制一个最适合的副业项目。`;
+        }
+        
+        // 测试数据流
+        function runTest() {
+            const resultsDiv = document.getElementById('test-results');
+            
+            console.log('=== 副业推荐器数据流测试 ===');
+            console.log('用户输入数据:', testUserProfile);
+            
+            const prompt = buildTestPrompt(testUserProfile);
+            console.log('生成的prompt:', prompt);
+            
+            resultsDiv.innerHTML = `
+                <h2>测试结果</h2>
+                <h3>用户数据:</h3>
+                <pre>${JSON.stringify(testUserProfile, null, 2)}</pre>
+                
+                <h3>生成的Prompt:</h3>
+                <pre>${prompt}</pre>
+                
+                <p><strong>请查看浏览器控制台获取详细信息</strong></p>
+            `;
+            
+            // 检查是否包含用户具体信息
+            const hasUserData = prompt.includes(testUserProfile.mainJob) && 
+                              prompt.includes(testUserProfile.timeAvailable) && 
+                              prompt.includes(testUserProfile.interests) && 
+                              prompt.includes(testUserProfile.goal);
+            
+            console.log('Prompt是否包含用户数据:', hasUserData);
+            
+            if (hasUserData) {
+                console.log('✅ 数据流正常：用户输入已正确传递到prompt中');
+            } else {
+                console.log('❌ 数据流异常：用户输入未正确传递');
+            }
+        }
+        
+        // 页面加载后运行测试
+        document.addEventListener('DOMContentLoaded', runTest);
+    </script>
+</body>
+</html>
