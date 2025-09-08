@@ -351,7 +351,9 @@ class SideHustleRecommender {
                 setTimeout(() => {
                     this.addMessage('请认真回答问题哦～让我重新问一遍：', 'bot');
                     setTimeout(() => {
-                        this.askNextQuestion();
+                        // 直接显示当前问题，不调用askNextQuestion避免重复
+                        const question = this.questions[questionIndex].question;
+                        this.addMessage(question, 'bot');
                     }, 1000);
                 }, 500);
                 return;
