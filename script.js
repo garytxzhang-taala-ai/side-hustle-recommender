@@ -251,8 +251,10 @@ class SideHustleRecommender {
     }
 
     askNextQuestion() {
-        if (this.currentStep < this.questions.length) {
-            const question = this.questions[this.currentStep].question;
+        // 因为startChat中已经将currentStep设置为1，所以这里需要减1来获取正确的问题
+        const questionIndex = this.currentStep - 1;
+        if (questionIndex < this.questions.length && questionIndex >= 0) {
+            const question = this.questions[questionIndex].question;
             this.addMessage(question, 'bot');
         } else {
             this.generateRecommendation();
@@ -329,8 +331,13 @@ class SideHustleRecommender {
         input.value = '';
         
         // 保存用户回答
-        if (this.currentStep < this.questions.length) {
-            const key = this.questions[this.currentStep].key;
+        if (this.currentStep <= this.questions.length) {
+            // 因为startChat中已经将currentStep设置为1，所以这里需要减1来获取正确的问题
+            const questionIndex = this.currentStep - 1;
+            if (questionIndex >= this.questions.length) {
+                return; // 已经超出问题范围
+            }
+            const key = this.questions[questionIndex].key;
             
             // 显示验证中的提示
             this.addMessage('正在验证回答...', 'bot', true);
