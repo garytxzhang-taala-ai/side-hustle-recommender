@@ -246,7 +246,8 @@ class SideHustleRecommender {
         const welcomeMessage = welcomeMessages[this.userProfile.tag] || `哈喽！看你选了「${tagNames[this.userProfile.tag]}」，我懂你的感受！先来聊聊，你是哪个学校的？比如「清华大学」「北京理工大学」，已经毕业的话说毕业院校 🎓`;
         this.addMessage(welcomeMessage, 'bot');
         
-        // 不再单独调用askNextQuestion，因为欢迎消息已经包含了第一个问题
+        // 欢迎消息已经包含了第一个问题，所以将currentStep设置为1，避免重复显示第一个问题
+        this.currentStep = 1;
     }
 
     askNextQuestion() {
