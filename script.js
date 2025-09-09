@@ -12,6 +12,7 @@ class SideHustleRecommender {
         };
         
         this.currentStep = 0;
+        this.chatStarted = false;  // 防止重复开始对话
         this.responseHistory = [];  // 记录AI回复历史，避免重复
         
         // 预设的信息收集问题（用于收集用户信息）
@@ -223,7 +224,19 @@ class SideHustleRecommender {
     }
 
     startChat() {
+        // 防止重复调用
+        if (this.chatStarted) {
+            return;
+        }
+        
+        // 清空之前的消息
         const chatMessages = document.getElementById('chat-messages');
+        if (chatMessages) {
+            chatMessages.innerHTML = '';
+        }
+        
+        this.chatStarted = true;
+        
         const tagNames = {
             'early-bird': '早八特困生',
             'commuter': '通勤沙丁鱼',
@@ -1003,6 +1016,7 @@ ${conversationContext}
             goal: ''
         };
         this.currentStep = 0;
+        this.chatStarted = false;  // 重置对话开始标志
         this.responseHistory = [];
         
         // 清空聊天记录
